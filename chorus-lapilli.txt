@@ -10,4 +10,5 @@
         3. The win condition is met if a player is able to move their "X"/"O" so that three of their "X"/"O" is matched three in a row across the board.
             a. The win condition is the same as in tic-tac-toe (3 across in any row, 3 across in any column, 3 across in any diagonal).
 
-11:56 AM: 
+11:56 AM: First starting with the placement phase.
+    Action: Added a counters using state variables to keep track of X and O turns. Implemented logic within already existing placement code to increment the counts. Included return early checks so that there exists 3 turns per player max.

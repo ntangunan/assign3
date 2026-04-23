@@ -12,15 +12,26 @@ export default function Board() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
 
+  const [xCount, setXCount] = useState(0);
+  const [oCount, setOCount] = useState(0);
+
   function handleClick(i) {
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
+
+    if (xIsNext && (xCount >= 3))
+      return;
+    if (!xIsNext && (oCount >= 3))
+      return;
+
     const nextSquares = squares.slice();
     if (xIsNext) {
       nextSquares[i] = 'X';
+      setXCount(xCount + 1);
     } else {
       nextSquares[i] = 'O';
+      setOCount(oCount + 1);
     }
     setSquares(nextSquares);
     setXIsNext(!xIsNext);

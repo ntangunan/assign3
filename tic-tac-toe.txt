@@ -1,0 +1,17 @@
+Setup for this assginment: 
+    - Set up environment
+    - Created my own fork of the assign3 repository
+    - Ran ./helper init which downloaded all the files needed for this assignment
+    - Began reading the project app's source code
+    - Starting Tic-Tac-Toe Tutorial
+    - Figured out how to run app locally on host
+
+1. Begin Starter Code from tutorial. The starter code creates a Square compnent which can be reused in the code, as well as a button containing an "X" inside of it.
+
+2. The styles.css file should contain all the necessary styles needed for the app.
+
+3. In a tic-tac-toe grid, there needs to be 9 boxes. In order to do this, we must create 9 boxes using:
+    <button className="square">X</button>;
+Each button must be created on a new line, otherwise we will receive an error. We will then change all the labeled "X"s in each button to a corresponding number. Starting at the top we label each square going from left to right for each row, numbering them 1 to 9. In order to have each button in rows of three, we need to make three divs, each containing three buttons. Additionally, we need a React Fragment (<>) to group eleemtns without creating a DOM node. This will keep our grid in tact wihtout unnecessarily adding any extra divs. In order to make these rows display as rows, we need to apply our CSS class "board-row", which will style the divs for us.
+
+4. Our Square component is now a collection of squares, so instead we will use our Board component to make our implementaion simpler.

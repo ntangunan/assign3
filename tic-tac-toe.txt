@@ -1,17 +1,69 @@
-Setup for this assginment: 
-    - Set up environment
-    - Created my own fork of the assign3 repository
-    - Ran ./helper init which downloaded all the files needed for this assignment
-    - Began reading the project app's source code
-    - Starting Tic-Tac-Toe Tutorial
-    - Figured out how to run app locally on host
+4/22/26
+11:00 PM: Initialized the project environment. After forking the repository, I ran ./helper init to pull down the starter files. Verified the file structure and successfully ran the app locally to ensure the dev server was reachable from my browser.
 
-1. Begin Starter Code from tutorial. The starter code creates a Square compnent which can be reused in the code, as well as a button containing an "X" inside of it.
+11:30 PM: Began implementing the basic UI components. I removed the initial code in App.jsx and wrote the initial Square component. The starter code uses simple button returns. Utilized the styles.css which formatted the button with the correct padding and borders.
 
-2. The styles.css file should contain all the necessary styles needed for the app.
+11:35 PM: Expanded the UI to a full 3x3 grid. I initially tried to list the buttons one after another, but realized I needed to wrap them in a React Fragment (<>) to return multiple elements. I organized the 9 buttons into three div elements with the className="board-row" to match the CSS.
 
-3. In a tic-tac-toe grid, there needs to be 9 boxes. In order to do this, we must create 9 boxes using:
-    <button className="square">X</button>;
-Each button must be created on a new line, otherwise we will receive an error. We will then change all the labeled "X"s in each button to a corresponding number. Starting at the top we label each square going from left to right for each row, numbering them 1 to 9. In order to have each button in rows of three, we need to make three divs, each containing three buttons. Additionally, we need a React Fragment (<>) to group eleemtns without creating a DOM node. This will keep our grid in tact wihtout unnecessarily adding any extra divs. In order to make these rows display as rows, we need to apply our CSS class "board-row", which will style the divs for us.
+    Observation: The grid didn't align correctly until I applied the board-row class. Once it was applied it formatted into a 3x3 layout of squares.
 
-4. Our Square component is now a collection of squares, so instead we will use our Board component to make our implementaion simpler.
+    Action: Labeled squares 1–9 to verify order of grid indices.
+
+4/23/26
+12:05 AM: Performed a refactor for better component architecture. I renamed the main component from Square to Board because it now represents the entire playing area. This makes the code more readable.
+
+12:10 AM: Started working on interactivity. My curent goal is to allow the board pass data through props. I am currently researching how to pass the "X" value by props so that clicking a square triggers a state change in the Board.
+
+12:23 AM: Further refactored for better component architecture. Created a Square component tha consists of a button that can be reused within the board component. This now creates 9 buttons by reusing the Square button component. However, this contains the text contents from that Square button which applies to the entire board.
+    Observation: The grid is now filled with the same content which is not what we want. 
+
+    Action: Create a prop variable that allows for each Square on the Board to have their own unique value, which can be assigned within their respective spots on the Board.
+
+12:26 AM: Implemented user interaction with the use of onClick. Now when the user clicks on one of the squares on the board, there is a response logged in the console.
+    Observation: console.log does not report to the terminal or the output of VS Code.
+
+    Action: Inspect the page with your browser's inspect tool and observe the Console tab. The activity of your onclick will show up there.
+
+12:35 AM: Enabled squares to remember that they have been clicked on by the user using useState from React. By using useState within the Square button, we are able to change the values of the squares when the buttons detect a click using setValue.
+
+12:41 AM: Refactored onClick logic so that the square component gets interaction data from the board component. In this case the board component is the parent to the square compnent as child receives the values form the parent.
+    Observation: Initially, we let the square component handle assigning the values to the squares on the board with onClick. However, we now want the squares on the board on remember whether or not they have been pressed already or not.
+
+    Action: Make the board component the parent to the swaure component so that the square component can grab values from the board.
+
+12:53 AM: 
+    Action: Created a squares state array in the Board component using useState(Array(9).fill(null)). Then refactored the Square component to receive its value and a click handler via props.
+
+    Problem Encountered: I initially tried passing onSquareClick={handleClick(0)}. This caused a "Too many re-renders" error in the console.
+
+    Correction: I realized that calling the function directly during render triggers an infinite loop. I fixed this by wrapping the call in an arrow function: onSquareClick={() => handleClick(0)}.
+
+    Result: Successfully imbedded all 9 squares. Clicking any square on the grid updates the state with the value of "X" in the correct position. I verified this by checking the UI to see if the states would change correctly.
+
+1:01 AM:
+    Action: Added a new state variable, xIsNext, initialized to true. Modified the handleClick function to check this boolean; if true, it marks the square with an "X", otherwise an "O".
+
+    Key Logic: Used setXIsNext(!xIsNext) at the end of the click handler to flip the boolean after every valid move.
+
+    Observation: Verified in the browser that clicking sequential squares now alternates between "X" and "O".
+
+    Correction: I noticed that I could currently click on a square that already had a mark and overwrite it. Now I need to add a check in the next step to prevent clicking squares that are already filled.
+
+1:18 AM:
+    Action: Implemented a "return early" check at the start of the handleClick function. Added an if statement that checks if squares[i] is already satisfied (contains an "X" or "O").
+
+    Result: The game now enforces basic rules where a move cannot be undone or overwritten by the next player.
+
+1:23 AM: Integrated Win-Condition Logic. Added the calculateWinner function outside the Board component. This function iterates through the predefined winning line combinations to check if the current squares array matches any of them.
+
+    Observation: The function is ready to return "X" or "O", but the UI doesn't yet reflect this state, and players can still click squares after a winner is declared. Players should no longer be able to make moves once a player wins.
+
+    Action: Call calculateWinner(squares) within the Board component and store the result in a winner variable.
+
+1:31 AM: Implemented Win-State Detection and Dynamic Status UI. Integrated the calculateWinner logic directly into the Board component to determine the game's outcome on every render.
+
+    Observation: The component needed a way to communicate whether the game was still active or if a player had secured a victory based on the current state of the squares array.
+
+    Action: Declared a winner constant by passing the current squares state into the calculateWinner helper function. Established a status variable using a conditional if/else block: if a winner exists, the status reports the victor; otherwise, it dynamically displays the next player based on the xIsNext boolean. Injected a new div with the status class into the JSX, ensuring the player always sees the current game state above the board.
+
+    Result: This is the end of the tutorial in terms of implementing the entire tic-tac-toe game (not including the time travel portion)

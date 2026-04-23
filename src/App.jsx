@@ -33,11 +33,14 @@ export default function Board() {
         return;
       }
 
+      // Select square to move piece to
       if (selectSquare !== null) {
         const validMoves = adjacentSquares(selectSquare);
         if (validMoves.includes(i)) {
           console.log('Moving piece from', selectSquare, 'to', i);
           const nextSquares = squares.slice();
+          nextSquares[i] = xIsNext ? 'X' : 'O';
+
           nextSquares[selectSquare] = null;
           setSquares(nextSquares);
           setSelectedSquare(null);

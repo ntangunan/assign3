@@ -7,6 +7,7 @@
         2. After Player 2 has placed their last O, Player 1 must move their X to an empty Square.
             a. Each player takes turns moving their "X"/"O" to an empty Square until the win condition is met.
             b. A player cannot move its "X"/"O" if there are no free empty Squares directly to its left, right, top, and bottom.
+                i. A visual indication to the user should be displayed in order to let the user know what the valid moves are.
         3. The win condition is met if a player is able to move their "X"/"O" so that three of their "X"/"O" is matched three in a row across the board.
             a. The win condition is the same as in tic-tac-toe (3 across in any row, 3 across in any column, 3 across in any diagonal).
 
@@ -17,5 +18,31 @@
 
 1:08 PM: Now I am looking into how to develop the logic for moving pieces after the placement phase.
     Action: Developed logic that detects if a valid square (correct X/O for current turn) has been selected after the placement phase has ended. Utilized a new state variable to validate if a square is currently selected.
- 
-PM: I now want to implement the move logic for valid moves a player can make after selecting a square.
+
+1:45 PM: I now want to implement the move logic for valid moves a player can make after selecting a square.
+
+    1. Implemented Piece Movement Phase and Selection Logic.
+    
+    2. Refactored handleClick to distinguish between the "Placement Phase" (first 3 moves per player) and the "Movement Phase" (after 6 total pieces are on the board).
+
+    Observation: In Chorus Lapilli, once a player has 3 pieces, they cannot add more. They must select an existing piece and move it to an empty adjacent slot.
+
+    Created an adjacentSquares helper function containing a lookup table for all 3x3 grid adjacencies (up, down, left, right, and diagonals).
+
+    Modified handleClick to handle two distinct clicks during movement:
+
+        - The first click selects the player's own piece.
+
+        - The second click validates if the target square is adjacent and empty via the adjacentSquares filter.
+
+    Current State: Players can now pick their X/O and place it in a valid spot. The piece count (xCount/oCount) remains constant at 3 per player once the movement phase begins. However, my code does not currently place the X/O on the board visually.
+
+3:16 PM: Fixed bug where square chosen for piece to move does not display X/O piece. 
+    Problem: Attempted to create a piece value to get from selectSquare in order to store its value in desired move square.
+
+    Fix: This method was too overcomplicated, I could instead use prior logic used in order to visually input that piece. Recreated the nextSquares variable and made it local to the "Select square to move piece to" phase and made it choose X or O based on the value of xIsNext.
+
+    Bug: Game still continues after a player has won.
+
+4:23PM: The last goal is to get the valid moves to be shown to the user after selecting a piece.
+    Action: created a visualValidMoves state variable in order to keep track send the state to the Board compenent when rendered. Updated Square and Board components to handle the highlighting of squares based on the visualValidMoves state.

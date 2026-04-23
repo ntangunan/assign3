@@ -1,8 +1,11 @@
 import { useState } from 'react';
 
-function Square({value, onSquareClick}) {
+function Square({value, onSquareClick, index, visualValidMoves}) {
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button 
+      className="square" onClick={onSquareClick} 
+      style={{backgroundColor: visualValidMoves && visualValidMoves.includes(index) ? 'lightgreen' : 'white'}}
+    >
       {value}
     </button>
   );
@@ -14,8 +17,8 @@ export default function Board() {
 
   const [xCount, setXCount] = useState(0);
   const [oCount, setOCount] = useState(0);
-
   const [selectSquare, setSelectedSquare] = useState(null);
+  const [visualValidMoves, setVisualValidMoves] = useState([]);
 
   function handleClick(i) {
     const placementDone = xCount === 3 && xCount === oCount;
@@ -26,16 +29,18 @@ export default function Board() {
       if (xIsNext && squares[i] === 'X') {
         console.log('X selected at', i);
         setSelectedSquare(i);
+        setVisualValidMoves(adjacentSquares(i));
         return;
       } else if (!xIsNext && squares[i] === 'O') {
         console.log('O selected at', i);
         setSelectedSquare(i);
+        setVisualValidMoves(adjacentSquares(i));
         return;
       }
 
       // Select square to move piece to
+      const validMoves = adjacentSquares(selectSquare);
       if (selectSquare !== null) {
-        const validMoves = adjacentSquares(selectSquare);
         if (validMoves.includes(i)) {
           console.log('Moving piece from', selectSquare, 'to', i);
           const nextSquares = squares.slice();
@@ -44,6 +49,7 @@ export default function Board() {
           nextSquares[selectSquare] = null;
           setSquares(nextSquares);
           setSelectedSquare(null);
+          setVisualValidMoves([]); 
           setXIsNext(!xIsNext);
           return;
         } else {
@@ -87,7 +93,8 @@ export default function Board() {
 
     return adjacentSqaures[i].filter(index => squares[index] === null);
   }
-
+  
+  // Determine Winner Status
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
@@ -100,19 +107,64 @@ export default function Board() {
     <>
       <div className="status">{status}</div>
       <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
+        <Square 
+          value={squares[0]} 
+          onSquareClick={() => handleClick(0)} 
+          visualValidMoves={visualValidMoves} 
+          index={0}
+        />
+        <Square 
+          value={squares[1]} 
+          onSquareClick={() => handleClick(1)} 
+          visualValidMoves={visualValidMoves} 
+          index={1}
+        />
+        <Square 
+          value={squares[2]} 
+          onSquareClick={() => handleClick(2)} 
+          visualValidMoves={visualValidMoves} 
+          index={2}
+        />
+       </div>
+      <div className="board-row">
+        <Square 
+          value={squares[3]} 
+          onSquareClick={() => handleClick(3)} 
+          visualValidMoves={visualValidMoves} 
+          index={3}
+        />
+        <Square 
+          value={squares[4]} 
+          onSquareClick={() => handleClick(4)} 
+          visualValidMoves={visualValidMoves} 
+          index={4}
+        />
+        <Square 
+          value={squares[5]} 
+          onSquareClick={() => handleClick(5)} 
+          visualValidMoves={visualValidMoves} 
+          index={5}
+        />
       </div>
       <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+        <Square 
+          value={squares[6]} 
+          onSquareClick={() => handleClick(6)} 
+          visualValidMoves={visualValidMoves} 
+          index={6}
+        />
+        <Square 
+          value={squares[7]} 
+          onSquareClick={() => handleClick(7)} 
+          visualValidMoves={visualValidMoves} 
+          index={7}
+        />
+        <Square 
+          value={squares[8]} 
+          onSquareClick={() => handleClick(8)} 
+          visualValidMoves={visualValidMoves}  
+          index={8}
+        />
       </div>
     </>
   );

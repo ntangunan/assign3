@@ -10,5 +10,12 @@
         3. The win condition is met if a player is able to move their "X"/"O" so that three of their "X"/"O" is matched three in a row across the board.
             a. The win condition is the same as in tic-tac-toe (3 across in any row, 3 across in any column, 3 across in any diagonal).
 
-11:56 AM: First starting with the placement phase.
+12:21 PM: First starting with the placement phase.
     Action: Added a counters using state variables to keep track of X and O turns. Implemented logic within already existing placement code to increment the counts. Included return early checks so that there exists 3 turns per player max.
+
+    Result: Players are still able to win during this placement phase.
+
+1:08 PM: Now I am looking into how to develop the logic for moving pieces after the placement phase.
+    Action: Developed logic that detects if a valid square (correct X/O for current turn) has been selected after the placement phase has ended. Utilized a new state variable to validate if a square is currently selected.
+ 
+PM: I now want to implement a visual indicator of the valid movoes a player can make after selecting a square.

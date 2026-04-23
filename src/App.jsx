@@ -15,17 +15,33 @@ export default function Board() {
   const [xCount, setXCount] = useState(0);
   const [oCount, setOCount] = useState(0);
 
+  const [selectSquare, setSelectedSquare] = useState(null);
+
   function handleClick(i) {
+    const placementDone = xCount === 3 && xCount === oCount;
+
+    if (placementDone) {
+      if (xIsNext && squares[i] === 'X') {
+        console.log('X selected');
+        setSelectedSquare(i);
+        return;
+      } else if (!xIsNext && squares[i] === 'O') {
+        console.log('O selected');
+        setSelectedSquare(i);
+        return;
+      }
+      return;
+    }
+  
+
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
 
-    if (xIsNext && (xCount >= 3))
-      return;
-    if (!xIsNext && (oCount >= 3))
-      return;
-
     const nextSquares = squares.slice();
+    
+
+
     if (xIsNext) {
       nextSquares[i] = 'X';
       setXCount(xCount + 1);

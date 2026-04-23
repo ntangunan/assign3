@@ -18,4 +18,4 @@
 1:08 PM: Now I am looking into how to develop the logic for moving pieces after the placement phase.
     Action: Developed logic that detects if a valid square (correct X/O for current turn) has been selected after the placement phase has ended. Utilized a new state variable to validate if a square is currently selected.
  
-PM: I now want to implement a visual indicator of the valid movoes a player can make after selecting a square.
+PM: I now want to implement the move logic for valid moves a player can make after selecting a square.

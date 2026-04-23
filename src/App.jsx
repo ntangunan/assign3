@@ -20,27 +20,43 @@ export default function Board() {
   function handleClick(i) {
     const placementDone = xCount === 3 && xCount === oCount;
 
+    // Movement phase
     if (placementDone) {
+      // Select a square
       if (xIsNext && squares[i] === 'X') {
-        console.log('X selected');
+        console.log('X selected at', i);
         setSelectedSquare(i);
         return;
       } else if (!xIsNext && squares[i] === 'O') {
-        console.log('O selected');
+        console.log('O selected at', i);
         setSelectedSquare(i);
         return;
       }
+
+      if (selectSquare !== null) {
+        const validMoves = adjacentSquares(selectSquare);
+        if (validMoves.includes(i)) {
+          console.log('Moving piece from', selectSquare, 'to', i);
+          const nextSquares = squares.slice();
+          nextSquares[selectSquare] = null;
+          setSquares(nextSquares);
+          setSelectedSquare(null);
+          setXIsNext(!xIsNext);
+          return;
+        } else {
+          console.log('Invalid move');
+          return;
+        }
+      }
       return;
     }
-  
 
+    // Placement phase
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
 
     const nextSquares = squares.slice();
-    
-
 
     if (xIsNext) {
       nextSquares[i] = 'X';
@@ -51,6 +67,22 @@ export default function Board() {
     }
     setSquares(nextSquares);
     setXIsNext(!xIsNext);
+  }
+
+  function adjacentSquares(i) {
+    const adjacentSqaures = [
+      [1, 3, 4],
+      [0, 2, 3, 4, 5], 
+      [1, 4, 5],
+      [0, 1, 4, 6, 7],
+      [0, 1, 2, 3, 5, 6, 7, 8],
+      [1, 2, 4, 7, 8],
+      [3, 4, 7],
+      [3, 4, 5, 6, 8],
+      [4, 5, 7]
+    ];
+
+    return adjacentSqaures[i].filter(index => squares[index] === null);
   }
 
   const winner = calculateWinner(squares);

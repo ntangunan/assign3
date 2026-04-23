@@ -1,0 +1,13 @@
+4/23/26
+11:47 AM: Understanding the rules of the Chorus Lapilli game. Planning how to approach changing the logic of the current tic-tac-toe game, as well as thinking about what new features I need to implement to match the new game's gameplay.
+    Observations:
+        1. Each player takes turns placing their "X"/"O" on the board.
+            a. "X"s and "O"s stop being placed after their each player has had their turn 3 times. 
+            b. A win condition can be met during the placements phase.
+        2. After Player 2 has placed their last O, Player 1 must move their X to an empty Square.
+            a. Each player takes turns moving their "X"/"O" to an empty Square until the win condition is met.
+            b. A player cannot move its "X"/"O" if there are no free empty Squares directly to its left, right, top, and bottom.
+        3. The win condition is met if a player is able to move their "X"/"O" so that three of their "X"/"O" is matched three in a row across the board.
+            a. The win condition is the same as in tic-tac-toe (3 across in any row, 3 across in any column, 3 across in any diagonal).
+
+11:56 AM: 

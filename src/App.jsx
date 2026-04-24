@@ -21,6 +21,10 @@ export default function Board() {
   const [visualValidMoves, setVisualValidMoves] = useState([]);
 
   function handleClick(i) {
+    if (calculateWinner(squares)) {
+      return;
+    }
+    
     const placementDone = xCount === 3 && xCount === oCount;
 
     // Movement phase

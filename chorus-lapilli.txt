@@ -44,5 +44,8 @@
 
     Bug: Game still continues after a player has won.
 
-4:23PM: The last goal is to get the valid moves to be shown to the user after selecting a piece.
+4:23 PM: The last goal is to get the valid moves to be shown to the user after selecting a piece.
     Action: created a visualValidMoves state variable in order to keep track send the state to the Board compenent when rendered. Updated Square and Board components to handle the highlighting of squares based on the visualValidMoves state.
+
+4:43 PM: Fixed bug in which players could move pieces after a player has won. An early return was used by calculating the winner with calculateWinner(squares) before anything else.
+

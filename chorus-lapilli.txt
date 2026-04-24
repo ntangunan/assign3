@@ -48,4 +48,15 @@
     Action: created a visualValidMoves state variable in order to keep track send the state to the Board compenent when rendered. Updated Square and Board components to handle the highlighting of squares based on the visualValidMoves state.
 
 4:43 PM: Fixed bug in which players could move pieces after a player has won. An early return was used by calculating the winner with calculateWinner(squares) before anything else.
+    Problem: Forgot to enforce rule that if a player placed a piece in the venter square (4) during the placement phase, when it is their turn they must either move that center piece or make a move that wins the game.
 
+5:24 PM: Implemented special Center Rule by adding logic inside Movement Phase code. 
+    Observation: The game requires that if a player occupies the center, their next move must either result in an immediate win or they must move the piece currently occupying the center square.
+    
+    Action: Implemented move smulation which creates a nextSquares copy to simulate the board state after a potential move but before updating the state.
+
+    Updated Win Detection: Used calculateWinner(nextSquares) to determine if the proposed move ends the game.
+
+    Rule Enforcement: Added a conditional check: if the player owns the center (squares[4]) and the proposed move does not result in a win (!wouldWin), the move is only valid if the piece being moved is the one in the center (selectSquare === 4).
+
+    Wrap up: The game now fully follows the Chorus Lapilli rules. Players are blocked from making "non-winning" moves that leave their piece stuck in the center, and the game correctly identifies winners during the movement phase.

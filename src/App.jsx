@@ -24,9 +24,9 @@ export default function Board() {
     if (calculateWinner(squares)) {
       return;
     }
-    
-    const placementDone = xCount === 3 && xCount === oCount;
 
+    const placementDone = xCount === 3 && xCount === oCount;
+    
     // Movement phase
     if (placementDone) {
       // Select a square
@@ -44,16 +44,25 @@ export default function Board() {
 
       // Select square to move piece to
       const validMoves = adjacentSquares(selectSquare);
+    
       if (selectSquare !== null) {
         if (validMoves.includes(i)) {
-          console.log('Moving piece from', selectSquare, 'to', i);
+          // Check for Center Square Rule by move simulation
           const nextSquares = squares.slice();
           nextSquares[i] = xIsNext ? 'X' : 'O';
-
           nextSquares[selectSquare] = null;
+          
+          const wouldWin = calculateWinner(nextSquares) === (xIsNext ? 'X' : 'O');
+          const ownCenter = squares[4] === (xIsNext ? 'X' : 'O');
+          
+          // Owning the center doesn't win, force that piece to move or win
+          if (ownCenter && !wouldWin && selectSquare !== 4) {
+            return;
+          }
+          // Apply move and reset
           setSquares(nextSquares);
           setSelectedSquare(null);
-          setVisualValidMoves([]); 
+          setVisualValidMoves([]);
           setXIsNext(!xIsNext);
           return;
         } else {

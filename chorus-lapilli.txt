@@ -13,7 +13,6 @@
 
 12:21 PM: First starting with the placement phase.
     Action: Added a counters using state variables to keep track of X and O turns. Implemented logic within already existing placement code to increment the counts. Included return early checks so that there exists 3 turns per player max.
-
     Result: Players are still able to win during this placement phase.
 
 1:08 PM: Now I am looking into how to develop the logic for moving pieces after the placement phase.
@@ -22,26 +21,17 @@
 1:45 PM: I now want to implement the move logic for valid moves a player can make after selecting a square.
 
     1. Implemented Piece Movement Phase and Selection Logic.
-    
     2. Refactored handleClick to distinguish between the "Placement Phase" (first 3 moves per player) and the "Movement Phase" (after 6 total pieces are on the board).
-
     Observation: In Chorus Lapilli, once a player has 3 pieces, they cannot add more. They must select an existing piece and move it to an empty adjacent slot.
-
     Created an adjacentSquares helper function containing a lookup table for all 3x3 grid adjacencies (up, down, left, right, and diagonals).
-
     Modified handleClick to handle two distinct clicks during movement:
-
         - The first click selects the player's own piece.
-
         - The second click validates if the target square is adjacent and empty via the adjacentSquares filter.
-
     Current State: Players can now pick their X/O and place it in a valid spot. The piece count (xCount/oCount) remains constant at 3 per player once the movement phase begins. However, my code does not currently place the X/O on the board visually.
 
 3:16 PM: Fixed bug where square chosen for piece to move does not display X/O piece. 
     Problem: Attempted to create a piece value to get from selectSquare in order to store its value in desired move square.
-
     Fix: This method was too overcomplicated, I could instead use prior logic used in order to visually input that piece. Recreated the nextSquares variable and made it local to the "Select square to move piece to" phase and made it choose X or O based on the value of xIsNext.
-
     Bug: Game still continues after a player has won.
 
 4:23 PM: The last goal is to get the valid moves to be shown to the user after selecting a piece.
@@ -52,11 +42,21 @@
 
 5:24 PM: Implemented special Center Rule by adding logic inside Movement Phase code. 
     Observation: The game requires that if a player occupies the center, their next move must either result in an immediate win or they must move the piece currently occupying the center square.
-    
     Action: Implemented move smulation which creates a nextSquares copy to simulate the board state after a potential move but before updating the state.
-
     Updated Win Detection: Used calculateWinner(nextSquares) to determine if the proposed move ends the game.
-
     Rule Enforcement: Added a conditional check: if the player owns the center (squares[4]) and the proposed move does not result in a win (!wouldWin), the move is only valid if the piece being moved is the one in the center (selectSquare === 4).
-
     Wrap up: The game now fully follows the Chorus Lapilli rules. Players are blocked from making "non-winning" moves that leave their piece stuck in the center, and the game correctly identifies winners during the movement phase.
+
+6:28 PM: Final Validation and Automated Test Suite Implementation. Developed a suite of Python Selenium tests in test_chorus_lapilli.py to verify game mechanics and ensure strict adherence to Chorus Lapilli rules.
+    Gameplay Validation:
+        - Turn Management: Verified that "X" and "O" alternate turns correctly and that moves cannot overwrite existing marks.
+        - Piece Limits: Confirmed that neither player can place a 4th piece on the board. App correctly transitions to the movement phase after 6 total placements.
+        - Win States: Validated that three-in-a-row (horizontal/vertical/diagonal) triggers the "Winner" status and, crucially, freezes the board to prevent further moves.
+    Movement Logic Validation:
+        - Adjacency Checks: Tested that pieces can only move to immediately neighboring empty squares. Verified that non-adjacent move attempts are rejected and the original piece remains in place.
+        - The "Center Rule" (Win or Vacate): 
+            - Block Test: Confirmed that if a player owns the center square, they are prohibited from moving a non-center piece unless that move results in an immediate win.
+            - Vacate Test: Verified that moving the center piece itself to an adjacent square is always permitted.
+            - Win Override: Confirmed that if a move results in a win, it is permitted even if it doesn't vacate the center.
+    Observation: The move simulation logic in the React component successfully handles the complex conditional requirements of the Roman variant.
+    Result: All tests passed using ./helper test. The application is robust against illegal moves and correctly identifies the game-over state.

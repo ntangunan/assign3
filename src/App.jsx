@@ -78,6 +78,9 @@ export default function Board() {
       return;
     }
 
+    if (xIsNext && xCount >= 3) return;
+    if (!xIsNext && oCount >= 3) return;
+
     const nextSquares = squares.slice();
 
     if (xIsNext) {

@@ -155,6 +155,182 @@ class TestChorusLapilli(unittest.TestCase):
         tiles[0].click()
         self.assertTileIs(tiles[0], self.SYMBOL_X)
 
+    def test_alternating_turns(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        tiles[0].click()  # X
+        self.assertTileIs(tiles[0], self.SYMBOL_X)
+
+        tiles[1].click()  # O
+        self.assertTileIs(tiles[1], self.SYMBOL_O)
+
+    def test_max_three_pieces_each(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        # X placements
+        tiles[0].click()  # X
+        tiles[1].click()  # O
+        tiles[2].click()  # X
+        tiles[3].click()  # O
+        tiles[4].click()  # X (X now has 3)
+        tiles[5].click()  # O (O now has 3)
+
+        # Try placing extra X (should not work)
+        tiles[6].click()
+        self.assertTileIs(tiles[6], self.SYMBOL_BLANK)
+    def test_cannot_place_on_filled_square(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        tiles[0].click()  # X
+        tiles[0].click()  # attempt overwrite
+
+        self.assertTileIs(tiles[0], self.SYMBOL_X)
+    def test_movement_phase_starts(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        tiles[0].click()  # X
+        tiles[4].click()  # O
+        tiles[1].click()  # X
+        tiles[5].click()  # O
+        tiles[3].click()  # X
+        tiles[2].click()  # O
+
+        # Now X pieces at: 0, 1, 3
+        # Square 0 has adjacent empty square 4? no (O)
+        # Square 1 has adjacent empty square? maybe 2 is O
+        # Square 3 has adjacent empty 6 or 7? yes (6)
+
+        tiles[3].click()  # select X
+        tiles[6].click()  # move (valid)
+
+        self.assertTileIs(tiles[3], self.SYMBOL_BLANK)
+        self.assertTileIs(tiles[6], self.SYMBOL_X)
+
+    def test_invalid_move_rejected(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        # Setup movement phase
+        tiles[0].click()  #X
+        tiles[1].click()  #O
+        tiles[2].click()  #X
+        tiles[3].click()  #O
+        tiles[4].click()  #X
+        tiles[5].click()  #O
+
+        # Select X
+        tiles[0].click()
+
+        # Try invalid move (non-adjacent)
+        tiles[8].click()
+
+        # Should not move
+        self.assertTileIs(tiles[0], self.SYMBOL_X)
+        self.assertTileIs(tiles[8], self.SYMBOL_BLANK)
+
+    def test_win_detection(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        tiles[0].click()  # X
+        tiles[3].click()  # O
+        tiles[1].click()  # X
+        tiles[4].click()  # O
+        tiles[2].click()  # X wins
+
+        status = self.driver.find_element(By.CLASS_NAME, "status").text
+        self.assertIn("Winner: X", status)
+    
+    def test_center_rule_blocks_non_winning_move(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        # Setup board:
+        # X will own center (4)
+        tiles[4].click()  # X
+        tiles[0].click()  # O
+        tiles[1].click()  # X
+        tiles[2].click()  # O
+        tiles[3].click()  # X
+        tiles[5].click()  # O
+
+        # Board now:
+        # X at 4, 1, 3
+        # O at 0, 2, 5
+        # Empty: 6, 7, 8
+
+        # X owns center and tries to move NON-center piece
+        tiles[3].click()  # select X at 3
+        tiles[6].click()  # valid adjacent move (but NOT winning)
+
+        # Move should be BLOCKED
+        self.assertTileIs(tiles[3], self.SYMBOL_X)
+        self.assertTileIs(tiles[6], self.SYMBOL_BLANK)
+    
+    def test_center_piece_can_move(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        # Same setup
+        tiles[4].click()  # X
+        tiles[0].click()
+        tiles[1].click()
+        tiles[2].click()
+        tiles[3].click()
+        tiles[5].click()
+
+        # Move CENTER piece
+        tiles[4].click()  # select center
+        tiles[7].click()  # valid adjacent
+
+        # Should succeed
+        self.assertTileIs(tiles[4], self.SYMBOL_BLANK)
+        self.assertTileIs(tiles[7], self.SYMBOL_X)
+    
+    def test_center_rule_allows_winning_move(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        # Setup:
+        tiles[4].click()  # X (center)
+        tiles[3].click()  # O
+        tiles[0].click()  # X
+        tiles[5].click()  # O
+        tiles[2].click()  # X
+        tiles[6].click()  # O
+
+        # X at: 4, 0, 2
+        # Move 4 to 1 gives:
+        # 0, 1, 2 results in a WIN
+
+        tiles[4].click()  # select center
+        tiles[1].click()  # move
+
+        self.assertTileIs(tiles[4], self.SYMBOL_BLANK)
+        self.assertTileIs(tiles[1], self.SYMBOL_X)
+
+        status = self.driver.find_element(By.CLASS_NAME, "status").text
+        self.assertIn("Winner: X", status)
+
+    def test_no_moves_after_win(self):
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+
+        # Create a winning condition for X
+        tiles[0].click()  # X
+        tiles[3].click()  # O
+        tiles[1].click()  # X
+        tiles[4].click()  # O
+        tiles[2].click()  # X -> X wins
+
+        # Verify win occurred
+        status = self.driver.find_element(By.CLASS_NAME, "status").text
+        self.assertIn("Winner: X", status)
+
+        # Try to make another move
+        tiles[5].click()
+
+        # Board should NOT change
+        self.assertTileIs(tiles[5], self.SYMBOL_BLANK)
+
+        # Also verify original winning tiles are unchanged
+        self.assertTileIs(tiles[0], self.SYMBOL_X)
+        self.assertTileIs(tiles[1], self.SYMBOL_X)
+        self.assertTileIs(tiles[2], self.SYMBOL_X)
 
 # ================= [DO NOT MAKE ANY CHANGES BELOW THIS LINE] =================
 
